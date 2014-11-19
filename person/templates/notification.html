@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+{% if logged_in %}
+<h2>Welcome {{name}}</h2>
+<p> Your notifications </p>
+<form method="post">{% csrf_token %}
+<input type="submit" value="Mark as Read" name = "ans" />
+</form>
+{% for note in note %}
+{% if note.from_id != note.to_id %}
+<a href="/question/{{note.ques_id}}/{{note.ans_id}}" target="_blank" style="text-decoration:none">
+{% if note.notify_id == 3 %}
+<p style="color:{{note.color}}">{{note.name}} answered your question "{{note.question}}"</p>
+{% endif %}
+{% if note.notify_id == 2 %}
+<p style="color:{{note.color}}">{{note.name}} commented on your answer to the question "{{note.question}}"</p>
+{% endif %}
+{% if note.notify_id == 1 %}
+<p style="color:{{note.color}}">{{note.name}} upvoted your answer to the question "{{note.question}}"</p>
+{% endif %}
+{% if note.notify_id == 4 %}
+<p style="color:{{note.color}}">{{note.name}} commented on his answer to your question "{{note.question}}"</p>
+{% endif %}
+</a>
+{% endif %}
+{% endfor %}
+{% else %}
+<p>Please login</p>
+{% endif %}
+</div>
+{% endblock %}

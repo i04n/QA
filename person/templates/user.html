@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+{% if logged_in %}
+<p>Name: {{usrr.name}}</p>
+<p>Email ID: {{usrr.email}}</p>
+{% else %}
+<p>Please login</p>
+{% endif %}
+
+</div>
+{% endblock %}
