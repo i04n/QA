@@ -17,8 +17,10 @@
 {% if answ.upvoted_by != "" %}
 <p style="color:Red">Upvoted by {{answ.upv}}</p>
 {% endif %}
-<input type="hidden" name="ans_id" type="text" value="{{answ.id}}" />
+<input type="hidden" name="ans_id" type="text" value="{{answ.id}}" />				
 <button type="submit" name="upvote" class="btn btn-success">Upvote</button>
+<br/>
+<br/>
 {% for comm in comm %}
 {% if comm.ans_id == answ.id %}
 <div class="well">
@@ -27,8 +29,16 @@
 <p style="color:Red">By {{comm.user}}</p>
 {% endif %}
 {% endfor %}
+<br/>
+<br/>
+<div class="row">
+<div class="col-md-8">
 <textarea cols="60" id="id_comment" name="com" rows="3"></textarea>
+</div>
+<div class="col-md-4">
 <button type="submit" name="comment" class="btn btn-default btn-sm">Comment</button>
+</div>
+</div>
 </form>
 {% endfor %}
 </div>
