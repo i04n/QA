@@ -13,7 +13,11 @@ def intialize_session(request):
 
 def register(request):
     flag = False
+
+    # would be used for logoff
     intialize_session(request)
+
+    # creating user
     if request.POST and "dd" in request.POST:
         pp = profileForm(request.POST)
         if pp.is_valid():
@@ -23,6 +27,7 @@ def register(request):
                 password = request.POST["password"]
                 register = profile(name = name,email = email,password = password)
                 register.save()
+                return HttpResponseRedirect('/login/')
             else:
                 return HttpResponse("Password not matched")
     else:
@@ -36,12 +41,14 @@ def login(request):
         if pp.is_valid():
             try:
                 pop = get_object_or_404(profile,email = request.POST["email"])
-                #if pop.validate(request.POST["password"]) == True:
                 if pop.password == request.POST["password"]:
                     request.session["user"] = pop.name
                     request.session["login"] = True
                     request.session["id"] = pop.id
+                    
+                    # need a better url for same names, email id would be better
                     return HttpResponseRedirect('/profile/'+pop.name.replace(' ','_'))
+                
                 else:
                     return HttpResponse("failure")
             except:
@@ -51,12 +58,17 @@ def login(request):
     return render_to_response("register.html",{'form':pp,'flag':flag},context_instance = RequestContext(request))
 
 def display(request,name):
+    
+    # better to use email id here (remove afer '@')
     name = name.replace('_',' ')
+    
     if request.session["login"] == False or request.session["user"] != name:
         logged_in = False
     else:
         logged_in = True
     if request.POST:
+        
+        # add a new question
         pp = questionForm(request.POST)
         if pp.is_valid():
             topic = request.POST["topic"]
@@ -69,18 +81,25 @@ def display(request,name):
             pp = questionForm()
     else:
         pp = questionForm()
-        #kk = get_object_or_404(answer,
     qq = question.objects.all()
+
+    # get name from session id for each answer added
+    # need to replace name with hyperlink to profle (change in profile.html)
     for item in qq:
-        pro = get_object_or_404(profile,id = item.added_by)
-        item.user = pro.name
+        item.user = get_name(item.added_by)
+
     return render_to_response("profile.html",{'ques':qq,'form':pp,'name':name,'logged_in':logged_in},context_instance = RequestContext(request))
 
 def answer_it(request,ques,ans=None):
+    # ques/1 = Question 1
+    # ques/1/2 = 2nd answer to question 1
+    
     logged_in = request.session["login"]
     qq = question.objects.filter(id = ques)
     name = request.session["user"]
     if request.POST and "ans" in request.POST:
+
+        # add a new answer
         pans = answerForm(request.POST)
         if pans.is_valid():
             content = request.POST["answer"]
@@ -91,26 +110,41 @@ def answer_it(request,ques,ans=None):
             question_id = ques
             answ = answer(upvotes = upvotes,content = content,added_by = added_by,time = time,question_id = question_id)
             answ.save()
+
+            # code to add answer to list of existing answers for this question
             qt = question.objects.get(id = ques)
+            # to fetch the answer just added, could be a better way.
             an = answer.objects.get(question_id = question_id,added_by = request.session["id"])
             if qt.answers == "":
                 qt.answers = str(an.id)
             else:
                 qt.answers = qt.answers + "," + str(an.id)
-            qt.save() 
+            qt.save()
+
+            # notification 3 = answer added
             create_notification(added_by,qt.added_by,3,ques)
+
+            # blank the form
             pans = answerForm()
     elif request.POST and "upvote" in request.POST:
+
+        # register upvote
+        # code required to prevent upvoting your own answer
         pans = answerForm()
         this_ans = answer.objects.get(id = request.POST["ans_id"])
         this_ans.upvotes = this_ans.upvotes + 1
+        # adding session id to upvote list
         if this_ans.upvoted_by == "":
             this_ans.upvoted_by = str(request.session["id"])
         else:
             this_ans.upvoted_by = this_ans.upvoted_by + "," + str(request.session["id"])
         this_ans.save()
+
+        # notification 1 = upvoted
         create_notification(request.session["id"],this_ans.added_by,1,ques)
     elif request.POST and "comment" in request.POST:
+
+        # adding comment
         pans = answerForm()
         content = request.POST["com"]
         ans_id = request.POST["ans_id"]
@@ -120,28 +154,35 @@ def answer_it(request,ques,ans=None):
         upvoted_by = ""
         this_com = comment(content = content,ans_id = ans_id,added_by = added_by,time = time,upvotes = upvotes,upvoted_by = upvoted_by)
         this_com.save()
+
+        # notifcation 2 = comment
         create_notification(request.session["id"],get_object_or_404(answer,id = ans_id).added_by,2,ques)
     else:
         pans = answerForm()
+    # fetch answers
     if ans == None:
+        # fetch all answers in case url is of type ques/1/
         answ = answer.objects.filter(question_id = ques)
     else:
+        # fetch answer in case url is of type ques/1/2/
         answ = answer.objects.filter(question_id = ques).filter(id = ans)
     comm = comment.objects.all()
+    
+    # get name for id in comments
     for item in comm:
-        pro = get_object_or_404(profile,id = item.added_by)
-        item.user = pro.name
+        item.user = get_name(item.added_by)
+
+    # get name for id in each answer and upvotes in each answer
     for item in answ:
-        pro = get_object_or_404(profile,id = item.added_by)
-        item.user = pro.name
+        item.user = get_name(item.added_by)
         item.upv = ""
         if item.upvoted_by != "":
             for dd in item.upvoted_by.split(','):
-                pq = get_object_or_404(profile,id = int(dd))
+                pq = get_name(int(dd))
                 if item.upv == "":
-                    item.upv = pq.name
+                    item.upv = pq
                 else:
-                    item.upv = item.upv + "," + pq.name
+                    item.upv = item.upv + "," + pq
     return render_to_response("answer.html",{'ques':qq,'name':name,'logged_in':logged_in,'ans':pans,'answers':answ,'comm':comm},context_instance = RequestContext(request))
 
 
@@ -185,3 +226,9 @@ def user_view(request,usr):
     else:
         logged_in = True
     return render_to_response("user.html",{'logged_in':logged_in,'usrr':usrr},context_instance = RequestContext(request))
+
+def get_name(user_id):
+    # return name for id
+    pro = get_object_or_404(profile,id = user_id)
+    return pro.name
+    
