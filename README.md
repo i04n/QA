@@ -19,5 +19,5 @@ An answer will display information like:
 </li>
 
 <b>Update:</b><br/>
-Added a content section, where a user can view his content, i.e. a page providing links to all his answers
+Added a content section, where a user can view his content, i.e. a page providing links to all his answers<br/>
 Applied bootstrap framework.
