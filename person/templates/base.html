@@ -5,11 +5,13 @@
 <script type="text/javascript" src="{% static "js/bootstrap.js" %}"></script>
 <script type="text/javascript" src="{% static "script.js" %}"></script>
 <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.css" %}">
+{% block script %}
+{% endblock script %}
 </head>
 <body>
 <div class="container">
 <div class="row">
-<div class="col-md-6 col-md-offset-2">
+<div class="col-md-8 col-md-offset-2">
 <br/>
 <br/>
 {% block content %}

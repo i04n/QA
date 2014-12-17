@@ -5,7 +5,6 @@ from person.models import *
 from datetime import datetime
 from django.core import serializers
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
-# Create your views here.
 
 def intialize_session(request):
     request.session["user"] = ""
@@ -231,4 +230,11 @@ def get_name(user_id):
     # return name for id
     pro = get_object_or_404(profile,id = user_id)
     return pro.name
-    
+
+def view_content(request):
+    current_user = request.session["id"]
+    answ = answer.objects.filter(added_by = current_user)
+    for item in answ:
+        qq = get_object_or_404(question,id = item.question_id)
+        item.ques = qq.content
+    return render_to_response("content.html",{'answ':answ},context_instance = RequestContext(request))

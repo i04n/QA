@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+{% for answ in answ %}
+<p>Your <a href="{% url 'answer' answ.question_id answ.id %}">answer</a> to the question <a href="{% url 'question' answ.question_id %}">{{answ.ques}}</a></p>
+<br/>
+{% endfor %}
+{% endblock %}

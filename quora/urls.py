@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     url(r'^question/(?P<ques>\d+)/','person.views.answer_it',name='question'),
     url(r'^profile/(?P<name>\w+)/notifications','person.views.notifs',name='user_notifs'),
     url(r'^profile/(?P<name>\w+)/','person.views.display',name='user'),
-    url(r'^test/','person.views.tester',name='test')
+    url(r'^test/','person.views.tester',name='test'),
+    url(r'^content/','person.views.view_content',name='content')
     
 )
