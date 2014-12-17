@@ -1,20 +1,23 @@
 QA
 ==
-Basic question answer site to provide a web app to ask questions, answer them , comment and upvote (based on quora)
+<i>Basic question answer site to provide a web app to ask questions, answer them , comment and upvote (based on quora)</i>
 
-Features:
-
+<b>Features:</b><br/>
 A user can:
-Add a question in a existing topic
-Add a answer to a existing question
-Add a comment on a existing answer
-Upvote a existing answer.
+<li>
+<ul>Add a question in a existing topic.</ul>
+<ul>Add a answer to a existing question.</ul>
+<ul>Add a comment on a existing answer.</ul>
+<ul>Upvote a existing answer.</ul>
+</li>
 
 An answer will display information like:
-Content
-Total number of upvotes, and users who upvote
-Comments
+<li>
+<ul>Content</ul>
+<ul>Total number of upvotes, and users who upvote</ul>
+<ul>Comments</ul>
+</li>
 
-Update:
+<b>Update:</b><br/>
 Added a content section, where a user can view his content, i.e. a page providing links to all his answers
 Applied bootstrap framework.
