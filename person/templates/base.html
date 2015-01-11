@@ -1,22 +1,41 @@
 <html>
 <head>
-{% load staticfiles %}
-<script type="text/javascript" src="{% static "jquery.js" %}"></script>
-<script type="text/javascript" src="{% static "js/bootstrap.js" %}"></script>
-<script type="text/javascript" src="{% static "script.js" %}"></script>
-<link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.css" %}">
-{% block script %}
-{% endblock script %}
+	{% load staticfiles %}
+	<script type="text/javascript" src="{% static "jquery.js" %}"></script>
+	<script type="text/javascript" src="{% static "js/bootstrap.js" %}"></script>
+	<script type="text/javascript" src="{% static "script.js" %}"></script>
+	<link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.css" %}">
+	{% block script %}
+	{% endblock %}
 </head>
 <body>
-<div class="container">
-<div class="row">
-<div class="col-md-8 col-md-offset-2">
-<br/>
-<br/>
-{% block content %}
-{% endblock %}
-</div>
-</div>
+	<div class="container">
+		<div class="row">
+			<div id="header-login">
+				<nav class="navbar navbar-inverse" role="navigation">
+				   <div class="navbar-header">
+					  <a class="navbar-brand" href="#"><big>Q</big><small>A</small></a>
+				   </div>
+				   <div>
+					   <form class="navbar-form navbar-right">
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Email">
+						</div>
+						<div class="form-group">
+							<input type="password" class="form-control" placeholder="Password">
+						</div>
+						<button type="submit" class="btn btn-primary" name="login">Login</button>
+					   </form>
+				   </div>
+				</nav>  
+				<br/>
+				<br/>
+				<div class="col-md-8 col-md-offset-2">
+					{% block content %}
+					{% endblock %}
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
