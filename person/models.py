@@ -18,10 +18,6 @@ class profileForm(forms.Form):
 	password = forms.CharField(max_length = 50,widget = forms.PasswordInput())
 	confirm_password = forms.CharField(max_length = 50,widget = forms.PasswordInput())
 
-class loginForm(forms.Form):
-	email = forms.CharField(max_length = 200)
-	password = forms.CharField(max_length = 50,widget = forms.PasswordInput())
-
 class question(models.Model):
         topic = models.CharField(max_length = 150)
         content = models.TextField()
@@ -32,9 +28,8 @@ class question(models.Model):
                 ordering = ('-time',)
 
 class questionForm(forms.Form):
-        #TOPICS = {'Movies':'Movies','Funny':'Funny','Comics':'Comics'}
-        #TOPICS = ('Movies','Funny','Comics')
-        TOPICS = (('Movies','Movies'),('Funny','Funny'),('Comics','Comics'))
+        # sample 4 topics to add questions
+        TOPICS = (('Movies','Movies'),('Funny','Funny'),('Comics','Comics'),('Love','Love'),)
         topic = forms.ChoiceField(choices=TOPICS,widget=forms.Select,required=False)
         question = forms.CharField(widget = forms.TextInput(attrs={'size':100}))
 

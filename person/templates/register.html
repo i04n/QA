@@ -2,25 +2,19 @@
 {% block script %}
 {% endblock %}
 {% block content %}
-<form method="post">{% csrf_token %}
-<div class="jumbotron">
-<table class="table table-striped table-condensed">
-{{form}}
-</table>
-<div class="row">
-<div class="col-md-6 col-md-offset-4">
-<br/>
-{% if flag %}
-<button class="btn btn-primary" type="submit" name="dd">Login</Login>
-{% else %}
-<button class="btn btn-primary" type="submit" name="dd">Register</button>
-{% endif %}
-</div>
-</div>
-</div>
-</div>
-</form>
-</div>
-<div id="mydiv">
-</div>
+	<form method="post">{% csrf_token %}
+		<div class="jumbotron">
+			<table class="table table-striped table-condensed">
+				{{form}}
+			</table>
+			<div class="row">
+				<div class="col-md-6 col-md-offset-4">
+					<br/>
+					<button class="btn btn-primary" type="submit" name="dd">Register</button>
+				</div>
+			</div>
+		</div>
+	</form>
+	<div id="mydiv">
+	</div>
 {% endblock %}

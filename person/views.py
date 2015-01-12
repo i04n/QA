@@ -11,7 +11,6 @@ def intialize_session(request):
     request.session["login"] = False
 
 def register(request):
-    flag = False
 
     # would be used for logoff
     intialize_session(request)
@@ -29,32 +28,29 @@ def register(request):
                 return HttpResponseRedirect('/login/')
             else:
                 return HttpResponse("Password not matched")
+    elif request.POST and "login" in request.POST:
+        # login existing user
+        pp = profileForm()
+        try:
+            pop = get_object_or_404(profile,email = request.POST["email"])
+            if pop.password == request.POST["password"]:
+                request.session["user"] = pop.name
+                request.session["login"] = True
+                request.session["id"] = pop.id
+                    
+                # need a better url for same names, email id would be better
+                return HttpResponseRedirect('/profile/'+pop.name.replace(' ','_'))
+                
+            else:
+                return HttpResponse("failure")
+        except:
+            return HttpResponse("no user")
     else:
         pp = profileForm()
     return render_to_response("register.html",{'form':pp,'flag':flag},context_instance = RequestContext(request))
 
 def login(request):
-    flag = True
-    if request.POST:
-        pp = loginForm(request.POST)
-        if pp.is_valid():
-            try:
-                pop = get_object_or_404(profile,email = request.POST["email"])
-                if pop.password == request.POST["password"]:
-                    request.session["user"] = pop.name
-                    request.session["login"] = True
-                    request.session["id"] = pop.id
-                    
-                    # need a better url for same names, email id would be better
-                    return HttpResponseRedirect('/profile/'+pop.name.replace(' ','_'))
-                
-                else:
-                    return HttpResponse("failure")
-            except:
-                return HttpResponse("no user")
-    else:
-            pp = loginForm()
-    return render_to_response("register.html",{'form':pp,'flag':flag},context_instance = RequestContext(request))
+    return render_to_response("thanks.html",{},context_instance = RequestContext(request))
 
 def display(request,name):
     

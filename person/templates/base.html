@@ -17,12 +17,12 @@
 					  <a class="navbar-brand" href="#"><big>Q</big><small>A</small></a>
 				   </div>
 				   <div>
-					   <form class="navbar-form navbar-right">
+					   <form class="navbar-form navbar-right" method="post">{% csrf_token %}
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Email">
+							<input type="email" class="form-control" placeholder="Email" name="email" id="email">
 						</div>
 						<div class="form-group">
-							<input type="password" class="form-control" placeholder="Password">
+							<input type="password" class="form-control" placeholder="Password" name="password" id="password">
 						</div>
 						<button type="submit" class="btn btn-primary" name="login">Login</button>
 					   </form>
