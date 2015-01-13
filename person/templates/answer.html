@@ -1,4 +1,11 @@
 {% extends "base.html" %}
+{% block script %}
+	<script type="text/javascript">
+		$(document).ready(function(){
+		$('#login_form').hide();				
+		});
+	</script>
+{% endblock %}
 {% block content %}
 	{% for qq in ques %}
 		<p>{{qq.content}}</p>

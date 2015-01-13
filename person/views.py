@@ -9,6 +9,7 @@ from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
 def intialize_session(request):
     request.session["user"] = ""
     request.session["login"] = False
+    request.session["id"] = None
 
 def register(request):
 
@@ -47,9 +48,23 @@ def register(request):
             return HttpResponse("no user")
     else:
         pp = profileForm()
-    return render_to_response("register.html",{'form':pp,'flag':flag},context_instance = RequestContext(request))
+    return render_to_response("register.html",{'form':pp},context_instance = RequestContext(request))
 
 def login(request):
+    if request.POST and "login" in request.POST:
+        try:
+            pop = get_object_or_404(profile,email = request.POST["email"])
+            if pop.password == request.POST["password"]:
+                request.session["user"] = pop.name
+                request.session["login"] = True
+                request.session["id"] = pop.id
+                return HttpResponseRedirect('/profile/'+pop.name.replace(' ','_'))
+            else:
+                return HttpResponse("failure")
+        except:
+            return HttpResponse("no user")
+    else:
+        intialize_session(request)
     return render_to_response("thanks.html",{},context_instance = RequestContext(request))
 
 def display(request,name):
@@ -82,8 +97,8 @@ def display(request,name):
     # need to replace name with hyperlink to profle (change in profile.html)
     for item in qq:
         item.user = get_name(item.added_by)
-
-    return render_to_response("profile.html",{'ques':qq,'form':pp,'name':name,'logged_in':logged_in},context_instance = RequestContext(request))
+    user = request.session["user"]
+    return render_to_response("profile.html",{'ques':qq,'form':pp,'name':name,'logged_in':logged_in,'user':user},context_instance = RequestContext(request))
 
 def answer_it(request,ques,ans=None):
     # ques/1 = Question 1
@@ -91,7 +106,7 @@ def answer_it(request,ques,ans=None):
     
     logged_in = request.session["login"]
     qq = question.objects.filter(id = ques)
-    name = request.session["user"]
+    user = request.session["user"]
     if request.POST and "ans" in request.POST:
 
         # add a new answer
@@ -178,7 +193,7 @@ def answer_it(request,ques,ans=None):
                     item.upv = pq
                 else:
                     item.upv = item.upv + "," + pq
-    return render_to_response("answer.html",{'ques':qq,'name':name,'logged_in':logged_in,'ans':pans,'answers':answ,'comm':comm},context_instance = RequestContext(request))
+    return render_to_response("answer.html",{'ques':qq,'user':user,'logged_in':logged_in,'ans':pans,'answers':answ,'comm':comm},context_instance = RequestContext(request))
 
 
 def tester(request):
@@ -191,10 +206,8 @@ def create_notification(from_id,to_id,notify_id,ques_id):
     note = notification(from_id = from_id,to_id = to_id,notify_id = notify_id,ques_id = ques_id,time = datetime.now(),read = 0)
     note.save()
 
-def notifs(request,name):
-    #to_id = request.session["id"]
-    name = name.replace('_',' ')
-    if request.session["login"] == False or request.session["user"] != name:
+def notifs(request):
+    if request.session["login"] == False:
         logged_in = False
     else:
         logged_in = True
@@ -212,7 +225,8 @@ def notifs(request,name):
             item.color = "Red"
         else:
             item.color = "Blue"
-    return render_to_response("notification.html",{'logged_in':logged_in,'note':note,'name':name},context_instance = RequestContext(request))
+    user = request.session["user"]
+    return render_to_response("notification.html",{'logged_in':logged_in,'note':note,'user':user},context_instance = RequestContext(request))
 
 def user_view(request,usr):
     usrr = get_object_or_404(profile,id = usr)
@@ -220,7 +234,8 @@ def user_view(request,usr):
         logged_in = False
     else:
         logged_in = True
-    return render_to_response("user.html",{'logged_in':logged_in,'usrr':usrr},context_instance = RequestContext(request))
+    user = request.session["user"]
+    return render_to_response("user.html",{'logged_in':logged_in,'usrr':usrr,'user':user},context_instance = RequestContext(request))
 
 def get_name(user_id):
     # return name for id
@@ -233,4 +248,22 @@ def view_content(request):
     for item in answ:
         qq = get_object_or_404(question,id = item.question_id)
         item.ques = qq.content
-    return render_to_response("content.html",{'answ':answ},context_instance = RequestContext(request))
+    user = request.session["user"]
+    return render_to_response("content.html",{'answ':answ,'user':user},context_instance = RequestContext(request))
+
+def logout(request):
+    if request.POST and "login" in request.POST:
+        try:
+            pop = get_object_or_404(profile,email = request.POST["email"])
+            if pop.password == request.POST["password"]:
+                request.session["user"] = pop.name
+                request.session["login"] = True
+                request.session["id"] = pop.id
+                return HttpResponseRedirect('/profile/'+pop.name.replace(' ','_'))
+            else:
+                return HttpResponse("failure")
+        except:
+            return HttpResponse("no user")
+    else:
+        intialize_session(request)
+    return render_to_response("logout.html",{},context_instance = RequestContext(request))

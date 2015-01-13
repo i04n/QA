@@ -14,9 +14,10 @@ urlpatterns = patterns('',
     url(r'^user/(?P<usr>\d+)/','person.views.user_view',name='user'),
     url(r'^question/(?P<ques>\d+)/(?P<ans>\d+)','person.views.answer_it',name='answer'),
     url(r'^question/(?P<ques>\d+)/','person.views.answer_it',name='question'),
-    url(r'^profile/(?P<name>\w+)/notifications','person.views.notifs',name='user_notifs'),
+    url(r'^notifications','person.views.notifs',name='user_notifs'),
     url(r'^profile/(?P<name>\w+)/','person.views.display',name='user'),
     url(r'^test/','person.views.tester',name='test'),
-    url(r'^content/','person.views.view_content',name='content')
+    url(r'^content/','person.views.view_content',name='content'),
+	url(r'^logout/','person.views.logout',name='logout')
     
 )
